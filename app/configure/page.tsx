@@ -1,18 +1,4 @@
-const navigation = [
-    { name: "Dashboard", href: "#", current: true },
-    { name: "Configure", href: "#", current: false },
-    { name: "Try it now", href: "#", current: false },
-  ];
-  const userNavigation = [
-    { name: "Your Profile", href: "#" },
-    { name: "Settings", href: "#" },
-    { name: "Sign out", href: "#" },
-  ];
-  
-  function classNames(...classes) {
-    return classes.filter(Boolean).join(" ");
-  }
-  
+
   export default function Example() {
     return (
       <>
