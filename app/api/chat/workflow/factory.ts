@@ -79,7 +79,7 @@ export const createWorkflow = (messages: Message[], params?: any) => {
     // Decision-making process
     const decision = await decideWorkflow(ev.data.input, chatHistoryStr);
 
-    if (decision !== "publish") {
+    if (decision !== "research") {
       return new ResearchEvent({
         input: `Research for this task: ${ev.data.input}`,
       });
@@ -93,9 +93,9 @@ export const createWorkflow = (messages: Message[], params?: any) => {
   const decideWorkflow = async (task: string, chatHistoryStr: string) => {
     const llm = Settings.llm;
 
-    const prompt = `You are an expert in decision-making, helping people write and publish blog posts.
-If the user is asking for a file or to publish content, respond with 'publish'.
-If the user requests to write or update a blog post, respond with 'not_publish'.
+    const prompt = `You are an expert in cyber security and a decision-making, helping people identity spam messsages or emails.
+If the message or email text seems phishing, spam or scam, respond with 'spam'.
+otherwise if it is legitimate email or message, respond with 'not_spam'.
 
 Here is the chat history:
 ${chatHistoryStr}
@@ -104,11 +104,12 @@ The current user request is:
 ${task}
 
 Given the chat history and the new user request, decide whether to publish based on existing information.
-Decision (respond with either 'not_publish' or 'publish'):`;
+Decision (respond with either 'spam' or 'not_spam'):`;
 
     const output = await llm.complete({ prompt: prompt });
     const decision = output.text.trim().toLowerCase();
-    return decision === "publish" ? "publish" : "research";
+    console.log("Decision: ", decision);
+    return decision === "spam" ? "research" : "publish";
   };
 
   const research = async (context: Context, ev: ResearchEvent) => {

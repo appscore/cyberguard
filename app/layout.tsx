@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
@@ -20,7 +20,8 @@ const navigation = [
 ];
 
 const inter = Inter({ subsets: ["latin"] });
-function classNames(...classes) {
+
+function classNames(...classes: Array<string>) {
   return classes.filter(Boolean).join(" ");
 }
 

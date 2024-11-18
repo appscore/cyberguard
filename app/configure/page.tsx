@@ -12,10 +12,7 @@ const navigation = [
     { name: "Settings", href: "#" },
     { name: "Sign out", href: "#" },
   ];
-  
-  function classNames(...classes) {
-    return classes.filter(Boolean).join(" ");
-  }
+
   
   export default function Example() {
 

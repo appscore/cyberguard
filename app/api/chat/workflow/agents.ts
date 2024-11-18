@@ -1,20 +1,20 @@
 import { ChatMessage } from "llamaindex";
 import { FunctionCallingAgent } from "./single-agent";
-import { getQueryEngineTools, lookupTools } from "./tools";
+import { lookupTools } from "./tools";
 
 export const createResearcher = async (
   chatHistory: ChatMessage[],
   params?: any,
 ) => {
-  const queryEngineTools = await getQueryEngineTools(params);
+  // const queryEngineTools = await getQueryEngineTools(params);
 
-  if (!queryEngineTools) {
-    throw new Error("Query engine tool not found");
-  }
+  // if (!queryEngineTools) {
+  //   throw new Error("Query engine tool not found");
+  // }
 
   return new FunctionCallingAgent({
     name: "researcher",
-    tools: queryEngineTools,
+    // tools: queryEngineTools,
     systemPrompt: `You are a researcher agent. You are responsible for retrieving information from the corpus.
 ## Instructions:
 + Don't synthesize the information, just return the whole retrieved information.
@@ -31,34 +31,35 @@ Your response should include a detailed analysis of the financial data, includin
 Construct the analysis in textual format; including tables would be great!
 Don't need to synthesize the data, just analyze and provide your findings.
 Always use the provided information, don't make up any information yourself.`;
-  const tools = await lookupTools(["interpreter"]);
-  if (tools.length > 0) {
-    systemPrompt = `${systemPrompt}
-You are able to visualize the financial data using code interpreter tool.
-It's very useful to create and include visualizations in the report. Never include any code in the report, just the visualization.`;
-  }
+//   const tools = await lookupTools(["interpreter"]);
+//   if (tools.length > 0) {
+//     systemPrompt = `${systemPrompt}
+// You are able to visualize the financial data using code interpreter tool.
+// It's very useful to create and include visualizations in the report. Never include any code in the report, just the visualization.`;
+//   }
   return new FunctionCallingAgent({
     name: "analyst",
-    tools: tools,
+    // tools: tools,
+    systemPrompt: systemPrompt,
     chatHistory,
   });
 };
 
 export const createReporter = async (chatHistory: ChatMessage[]) => {
-  const tools = await lookupTools(["document_generator"]);
+  // const tools = await lookupTools(["document_generator"]);
   let systemPrompt = `You are a report generation assistant tasked with producing a well-formatted report given parsed context.
 Given a comprehensive analysis of the user request, your task is to synthesize the information and return a well-formatted report.
 
 ## Instructions
 You are responsible for representing the analysis in a well-formatted report. If tables or visualizations are provided, add them to the most relevant sections.
 Finally, the report should be presented in markdown format.`;
-  if (tools.length > 0) {
-    systemPrompt = `${systemPrompt}. 
-You are also able to generate an HTML file of the report.`;
-  }
+  //   if (tools.length > 0) {
+  //     systemPrompt = `${systemPrompt}.
+  // You are also able to generate an HTML file of the report.`;
+  //   }
   return new FunctionCallingAgent({
     name: "reporter",
-    tools: tools,
+    // tools: tools,
     systemPrompt: systemPrompt,
     chatHistory,
   });
