@@ -1,17 +1,9 @@
 "use client";
 
 import { ModelConfig } from "@/app/components/model";
+import { QueryClient, QueryClientProvider } from "react-query";
 
-const navigation = [
-    { name: "Dashboard", href: "#", current: true },
-    { name: "Configure", href: "#", current: false },
-    { name: "Try it now", href: "#", current: false },
-  ];
-  const userNavigation = [
-    { name: "Your Profile", href: "#" },
-    { name: "Settings", href: "#" },
-    { name: "Sign out", href: "#" },
-  ];
+  const queryClient = new QueryClient();
 
   
   export default function Example() {
@@ -34,6 +26,7 @@ const navigation = [
         </header>
         <main>
           <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+          <QueryClientProvider client={queryClient}>
           <ModelConfig
                 sectionTitle="Start" //{configured ? "Update model" : "Start"}
                 sectionDescription= "Set up an AI model to start the app."
@@ -45,6 +38,7 @@ const navigation = [
                 configured={false}
                 onConfigChange={handleModelConfigChange}
               />
+            </QueryClientProvider>
           </div>
         </main>
       </>
