@@ -29,13 +29,13 @@ export const GeminiForm = ({
     <>
       <FormField
         control={form.control}
-        name="google_api_key"
+        name="api_key"
         render={({ field }) => (
           <FormItem>
             <FormLabel>Google API Key (*)</FormLabel>
             <FormControl>
               <PasswordInput
-                placeholder={defaultValues.google_api_key ?? ""}
+                placeholder={defaultValues.api_key ?? ""}
                 showCopy
                 {...field}
               />

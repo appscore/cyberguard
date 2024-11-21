@@ -7,6 +7,7 @@ import { DEFAULT_MISTRAL_CONFIG, MistralConfigSchema } from "./mistral";
 import { DEFAULT_OLLAMA_CONFIG, OllamaConfigSchema } from "./ollama";
 import { DEFAULT_OPENAI_CONFIG, OpenAIConfigSchema } from "./openai";
 import { DEFAULT_TSYSTEMS_CONFIG, TSystemsConfigSchema } from "./t-systems";
+import { BaseConfigSchema } from "./base";
 
 export const ModelConfigSchema = z
   .union([
@@ -40,6 +41,8 @@ export const ModelConfigSchema = z
   });
 
 export type ModelConfigType = z.TypeOf<typeof ModelConfigSchema>;
+
+export type BaseModelConfigType = z.TypeOf<typeof BaseConfigSchema>;
 
 export const supportedProviders = [
   {
@@ -98,7 +101,8 @@ export const fetchModelConfig = async (): Promise<ModelConfigType> => {
   if (!res.ok) {
     throw new Error("Failed to fetch model config");
   }
-  return res.json();
+  const data = await res.json();
+  return data;
 };
 
 export const updateModelConfig = async (
