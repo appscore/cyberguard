@@ -5,7 +5,6 @@ import {
   Workflow,
   WorkflowEvent,
 } from "@llamaindex/core/workflow";
-import { Message } from "ai";
 import { Settings } from "llamaindex";
 
 const TIMEOUT = 360 * 1000;
@@ -18,11 +17,15 @@ class ClassificationEvent extends WorkflowEvent<{
 }> {}
 class MetricGenerationEvent extends WorkflowEvent<{
   input: string;
-  category: string;
+  classification: {
+    category: string;
+    confidenceLevel: string;
+    description: string;
+  };
   reason: string;
 }> {}
 
-export const createWorkflow = (messages: Message[], params?: any) => {
+export const createWorkflow = () => {
   const runAgent = async (
     context: Context,
     agentPrompt: string, // Prompt for the agent
@@ -80,20 +83,29 @@ Text to analyze: "${ev.data.input}"
 Previous analysis: ${ev.data.reason}
 
 Respond with:
-1. Category name (one of the above)
+1. Category (one of the above)
 2. Confidence level (high/medium/low)
-3. Brief explanation of why this classification was chosen`;
+3. Brief explanation of why this classification was chosen
+
+Format your response as valid JSON in the following structure:
+  {
+    "category": <category>,
+    "confidenceLevel": <score>,
+    "description": <Brief explanation of why this classification was chosen>,
+  }
+  DO NOT ADD MARKDOWN TEXT.
+`;
 
     const classificationResult = await runAgent(
       context,
       agentPrompt,
       ev.data.input,
     );
-    const category = classificationResult.split("\n")[0].trim(); // Extract category
-    context.set("category", category); // Store for later use
+    const classifcation = JSON.parse(classificationResult); // Extract category
+    // context.set("category", category); // Store for later use
     return new MetricGenerationEvent({
       input: ev.data.input,
-      category: category,
+      classification: classifcation,
       reason: ev.data.reason,
     });
   };
@@ -103,10 +115,10 @@ Respond with:
     ev: MetricGenerationEvent,
   ) => {
     console.log("generateMetrics flow");
-    const agentPrompt = `Generate quantitative risk metrics for this ${ev.data.category} cybersecurity threat.
+    const agentPrompt = `Generate quantitative risk metrics for this ${ev.data.classification.category} cybersecurity threat.
 
   Input Text: "${ev.data.input}"
-   Analysis: ${ev.data.reason}
+  Analysis: ${ev.data.reason}
 
   Generate numerical scores (0-100) for the following metrics:
   1. Severity: Overall threat level
@@ -117,13 +129,26 @@ Respond with:
   
   For each metric, provide:
   - Score (0-100)
-  - Brief justification for the score
+  - Combine brief justification for the scores
   
-  Format your response as:
-  metric_name: score
-  justification: brief explanation`;
+  Format your response as valid JSON in the following structure:
+  {
+    "Severity": <score>,
+    "Urgency": <score>,
+    "Sophistication": <score>,
+    "Potential Impact": <score>,
+    "Credibility": <score>,
+    "justification: <brief justification>
+  }
+  DO NOT ADD markdown string.  
+  `;
     const metricsResult = await runAgent(context, agentPrompt, ev.data.input);
-    return new StopEvent({ result: metricsResult });
+    return new StopEvent({
+      result: {
+        classification: ev.data.classification,
+        metrics: JSON.parse(metricsResult),
+      },
+    });
   };
 
   const workflow = new Workflow({ timeout: TIMEOUT, validate: true });
@@ -140,14 +165,3 @@ Respond with:
 
   return workflow;
 };
-
-// const data = {
-//     message: 'xyz',
-//     data:: [{
-//         categorization: "",
-//         Severity: 70,
-//         Sophistication: 60
-//     },{
-
-//     }]
-// }

@@ -1,26 +1,19 @@
 import { initObservability } from "@/app/observability";
 import { Message } from "ai";
-import { OpenAI } from "llamaindex";
+import { Settings } from "llamaindex";
 import { NextRequest, NextResponse } from "next/server";
-import { initSettings } from "./engine/settings";
 // import { createWorkflow } from "./workflow/threatFactory";
 // import { createWorkflow } from "./workflow/factory";
+import { StartEvent, Workflow } from "@llamaindex/core/workflow";
+import { ModelManager } from "./workflow/models";
 import { createWorkflow } from "./workflow/threatFactory2";
 initObservability();
-initSettings();
+// initSettings();
+const modelManager = new ModelManager();
+modelManager.initModels();
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-const models: any = {
-  openai: {
-    name: "gpt-3.5-turbo",
-    instance: new OpenAI({ model: "gpt-4o" }),
-  },
-  // gemini: {
-  //   name: "gemini",
-  //   instance: new Gemini({ model: GEMINI_MODEL.GEMINI_PRO }),
-  // }, // Create Gemini instance
-};
 
 export async function POST(request: NextRequest) {
   try {
@@ -36,26 +29,16 @@ export async function POST(request: NextRequest) {
         { status: 400 },
       );
     }
-    const agent = createWorkflow(messages, data);
-    // TODO: fix type in agent.run in LITS
-    // const result = agent.run<AsyncGenerator<ChatResponseChunk>>(
-    //   userMessage.content,
-    // ) as unknown as Promise<StopEvent<AsyncGenerator<ChatResponseChunk>>>;
-    const result = await agent.run(userMessage.content);
+
+    // const agent = createWorkflow(messages, data);
+
+    const workflowResponse = await runWorkflowsForAllModels(
+      userMessage.content,
+    );
     return NextResponse.json({
       success: true,
-      result: result.data.result,
+      data: { text: userMessage.content, result: workflowResponse },
     });
-    // console.log("Result:", result);
-    // // convert the workflow events to a vercel AI stream data object
-    // const agentStreamData = await workflowEventsToStreamData(
-    //   agent.streamEvents(),
-    // );
-    // // convert the workflow result to a vercel AI content stream
-    // const stream = toDataStream(result, {
-    //   onFinal: () => agentStreamData.close(),
-    // });
-    // return new StreamingTextResponse(stream, {}, agentStreamData);
   } catch (error) {
     console.error("[LlamaIndex]", error);
     return NextResponse.json(
@@ -67,4 +50,46 @@ export async function POST(request: NextRequest) {
       },
     );
   }
+}
+
+async function runWorkflowForModel(
+  workflow: Workflow,
+  modelName: string,
+  input: string,
+) {
+  console.log(`Running workflow for model: ${modelName}`);
+
+  // Set the active model in Settings before running the workflow
+  Settings.llm = modelManager.getLLM(modelName);
+
+  try {
+    // Start the workflow
+    const startEvent = new StartEvent({ input });
+    const workflowResponse = await workflow.run(startEvent);
+
+    console.log(`Workflow completed for model: ${modelName}`);
+    return {
+      model: modelName,
+      data: workflowResponse.data.result,
+    };
+  } catch (error: any) {
+    console.error(`Error running workflow for model ${modelName}:`, error);
+    return { model: modelName, error: error.message };
+  }
+}
+
+async function runWorkflowsForAllModels(input: string) {
+  // Initialize the workflow
+  const workflow = createWorkflow();
+
+  // Get all model names
+  const llmModels = modelManager.getAllLLMs();
+
+  const results = [];
+  for (const modelName of Object.keys(llmModels)) {
+    const result = await runWorkflowForModel(workflow, modelName, input);
+    results.push(result);
+  }
+
+  return results;
 }

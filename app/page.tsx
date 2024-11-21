@@ -22,7 +22,10 @@ export default function Home() {
       body: JSON.stringify(requestBody),
     })
       .then((res) => res.json())
-      .then((res) => setResponse(res.result));
+      .then((res) => {
+        console.log("res:", res);
+        setResponse(JSON.stringify(res.data));
+      });
   };
 
   return (
