@@ -37,29 +37,26 @@ import { TSystemsForm } from "@/app/configure/providers/t-systems";
 export const ModelConfig = ({
   sectionTitle,
   sectionDescription,
-  configured,
+  config,
   onConfigChange,
+  //refetch,
+  queryClient,
+  isLoading
 }: {
   sectionTitle: string;
   sectionDescription: string;
-  configured?: boolean;
+  config: any;
   onConfigChange: () => void;
+  //refetch: () => void;
+  queryClient: any;
+  isLoading: boolean
 }) => {
-  const queryClient = useQueryClient();
-  const {
-    data,
-    isLoading: isFetching,
-    refetch,
-    isRefetching,
-  } = useQuery("modelConfig", fetchModelConfig, {
-    refetchOnWindowFocus: false,
-  });
   const form = useForm({
     resolver: zodResolver(ModelConfigSchema),
     defaultValues: {
       ...getDefaultProviderConfig("openai"),
     },
-    values: data,
+    values: config,
   });
 
   const { mutate: updateConfig, isLoading: isSubmitting } = useMutation(
@@ -73,15 +70,15 @@ export const ModelConfig = ({
           duration: 5000,
         });
         // Fetch the model config again to reset the form
-        refetch().then(() => {
-          form.reset(data);
-        });
+        // refetch().then(() => {
+        //   form.reset(config);
+        // });
       },
       onSuccess: () => {
         toast({
           title: "Model config updated successfully",
         });
-        refetch();
+        //refetch();
         onConfigChange();
         // Invalidate the checkSupportedModel query
         queryClient.invalidateQueries("checkSupportedModel");
@@ -95,12 +92,11 @@ export const ModelConfig = ({
     // Run zod form validation
     await form.trigger().then((isValid) => {
       if (isValid) {
-        updateConfig(form.getValues());
+        const updatedConfig = form.getValues();
+        updateConfig(updatedConfig);
       }
     });
   }
-
-  const isLoading = isFetching || isRefetching || isSubmitting;
 
   const getModelForm = (form: any, defaultValues: any) => {
     switch (defaultValues.model_provider ?? "") {
@@ -135,58 +131,56 @@ export const ModelConfig = ({
   };
 
   return (
-    configured !== undefined && (
-      <ExpandableSection
-        open={configured ? undefined : true}
-        isLoading={isLoading}
-        name="update-model"
-        title={sectionTitle}
-        description={sectionDescription}
-      >
-        <Form {...form}>
-          <form onSubmit={handleSubmit} className="space-y-4 mb-4">
-            <FormField
-              control={form.control}
-              name="model_provider"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Model Provider</FormLabel>
-                  <FormControl>
-                    <Select
-                      defaultValue={form.getValues().model_provider ?? "openai"}
-                      onValueChange={changeModelProvider}
-                      {...field}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="OpenAI" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {supportedProviders.map((provider) => (
-                          <SelectItem
-                            key={provider.value}
-                            value={provider.value}
-                          >
-                            {provider.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormDescription>
-                    * Note: Only OpenAI, Groq, Azure-OpenAI support
-                    multi-agents.
-                  </FormDescription>
-                </FormItem>
-              )}
-            />
+    <ExpandableSection
+      open={true}
+      isLoading={isLoading}
+      name="update-model"
+      title={sectionTitle}
+      description={sectionDescription}
+    >
+      <Form {...form}>
+        <form onSubmit={handleSubmit} className="space-y-4 mb-4">
+          <FormField
+            control={form.control}
+            name="model_provider"
+            render={({ field }: { field: any }) => (
+              <FormItem>
+                <FormLabel>Model Provider</FormLabel>
+                <FormControl>
+                  <Select
+                    defaultValue={form.getValues().model_provider ?? "openai"}
+                    onValueChange={changeModelProvider}
+                    {...field}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="OpenAI" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {supportedProviders.map((provider: any) => (
+                        <SelectItem
+                          key={provider.value}
+                          value={provider.value}
+                        >
+                          {provider.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormDescription>
+                  * Note: Only OpenAI, Groq, Azure-OpenAI support
+                  multi-agents.
+                </FormDescription>
+              </FormItem>
+            )}
+          />
 
-            {getModelForm(form, form.getValues())}
-            <div className="mt-4">
-              <SubmitButton isSubmitting={isSubmitting} />
-            </div>
-          </form>
-        </Form>
-      </ExpandableSection>
-    )
+          {getModelForm(form, form.getValues())}
+          <div className="mt-4">
+            <SubmitButton isSubmitting={isSubmitting} />
+          </div>
+        </form>
+      </Form>
+    </ExpandableSection>
   );
 };

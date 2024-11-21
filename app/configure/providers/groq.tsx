@@ -44,7 +44,7 @@ export const GroqForm = ({
             <FormLabel>Groq API Key (*)</FormLabel>
             <FormControl>
               <PasswordInput
-                placeholder={defaultValues.openai_api_key ?? "sk-xxx"}
+                placeholder={defaultValues.api_key ?? "sk-xxx"}
                 showCopy
                 {...field}
               />

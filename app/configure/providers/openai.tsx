@@ -25,13 +25,13 @@ export const OpenAIForm = ({
     <>
       <FormField
         control={form.control}
-        name="openai_api_key"
+        name="api_key"
         render={({ field }) => (
           <FormItem>
             <FormLabel>OpenAI API Key (*)</FormLabel>
             <FormControl>
               <PasswordInput
-                placeholder={defaultValues.openai_api_key ?? "sk-xxx"}
+                placeholder={defaultValues.api_key ?? "sk-xxx"}
                 showCopy
                 {...field}
               />
