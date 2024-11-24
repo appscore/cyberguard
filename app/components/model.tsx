@@ -1,12 +1,13 @@
 import {
   ModelConfigSchema,
-  fetchModelConfig,
   getDefaultProviderConfig,
   supportedProviders,
   updateModelConfig,
+  deleteModelConfig,
 } from "@/app/client/providers";
 import { ExpandableSection } from "@/app/components/ui/expandableSection";
 import { SubmitButton } from "@/app/components/ui/submitButton";
+import { Button } from "@/app/components/ui/button";
 import {
   Form,
   FormControl,
@@ -41,7 +42,8 @@ export const ModelConfig = ({
   onConfigChange,
   //refetch,
   queryClient,
-  isLoading
+  isLoading,
+  onDelete,
 }: {
   sectionTitle: string;
   sectionDescription: string;
@@ -49,7 +51,8 @@ export const ModelConfig = ({
   onConfigChange: () => void;
   //refetch: () => void;
   queryClient: any;
-  isLoading: boolean
+  isLoading: boolean;
+  onDelete: () => void;
 }) => {
   const form = useForm({
     resolver: zodResolver(ModelConfigSchema),
@@ -69,17 +72,14 @@ export const ModelConfig = ({
           variant: "destructive",
           duration: 5000,
         });
-        // Fetch the model config again to reset the form
-        // refetch().then(() => {
-        //   form.reset(config);
-        // });
+        form.reset(config);
       },
       onSuccess: () => {
         toast({
           title: "Model config updated successfully",
         });
         //refetch();
-        onConfigChange();
+        //onConfigChange();
         // Invalidate the checkSupportedModel query
         queryClient.invalidateQueries("checkSupportedModel");
       },
@@ -97,6 +97,11 @@ export const ModelConfig = ({
       }
     });
   }
+
+  const handleDelete = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    onDelete();
+  };
 
   const getModelForm = (form: any, defaultValues: any) => {
     switch (defaultValues.model_provider ?? "") {
@@ -176,8 +181,11 @@ export const ModelConfig = ({
           />
 
           {getModelForm(form, form.getValues())}
-          <div className="mt-4">
+          <div className="mt-4 flex justify-between">
             <SubmitButton isSubmitting={isSubmitting} />
+            <Button onClick={handleDelete} variant="destructive">
+              Delete
+            </Button>
           </div>
         </form>
       </Form>

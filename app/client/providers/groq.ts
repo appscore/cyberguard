@@ -3,7 +3,7 @@ import { BaseConfigSchema } from "./base";
 
 export const GroqConfigSchema = BaseConfigSchema.extend({
   model_provider: z.literal("groq"),
-  groq_api_key: z
+  api_key: z
     .string()
     .nullable()
     .optional()
@@ -18,5 +18,5 @@ export const DEFAULT_GROQ_CONFIG: z.input<typeof GroqConfigSchema> = {
   model: "llama3-8b",
   embedding_model: "all-MiniLM-L6-v2",
   embedding_dim: 384,
-  groq_api_key: "",
+  api_key: "",
 };

@@ -33,14 +33,6 @@ export default function ConfigurePage() {
             <h1 className="text-3xl font-bold tracking-tight text-gray-900">
               Configure
             </h1>
-            <Button 
-              onClick={addModelConfig}
-              className="flex items-center gap-2"
-              variant="outline"
-            >
-              <Plus className="h-4 w-4" />
-              Add Model
-            </Button>
           </div>
         </div>
       </header>

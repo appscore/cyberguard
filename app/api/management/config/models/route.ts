@@ -16,15 +16,15 @@ export async function POST(request: NextRequest) {
   try {
     const reqBody = await request.json();
     console.log("request ", JSON.stringify(reqBody));
-    const { modelProvider, modelName, apiKey } = reqBody;
-    if (!modelProvider || !modelName || !apiKey) {
+    const { model_provider, model, api_key } = reqBody;
+    if (!model_provider || !model || !api_key) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
     const newRecord = await createRecord({
-      modelProvider,
-      modelName,
-      apiKey
+      model_provider,
+      model,
+      api_key
     });
 
     console.log("newRecord ", JSON.stringify(newRecord));

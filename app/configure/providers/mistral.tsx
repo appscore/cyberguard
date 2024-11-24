@@ -23,7 +23,7 @@ export const MistralForm = ({
     <>
       <FormField
         control={form.control}
-        name="mistral_api_key"
+        name="api_key"
         render={({ field }) => (
           <FormItem>
             <FormLabel>Mistral API Key (*)</FormLabel>
