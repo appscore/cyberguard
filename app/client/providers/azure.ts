@@ -23,7 +23,7 @@ export const AzureOpenAIConfigSchema = BaseConfigSchema.extend({
       (value) => value && value.trim() !== "",
       "AZURE OpenAI API version is required",
     ),
-  azure_openai_api_key: z
+  api_key: z
     .string()
     .nullable()
     .optional()
