@@ -108,8 +108,8 @@ export const fetchModelConfig = async (): Promise<ModelConfigType> => {
 export const updateModelConfig = async (
   data: ModelConfigType,
 ): Promise<ModelConfigType> => {
-  const res = await fetch(`${getBaseURL()}/api/management/config/models`, {
-    method: "POST",
+  const res = await fetch(`${getBaseURL()}/api/management/config/models/` + data.id, {
+    method: "PUT",
     headers: {
       "Content-Type": "application/json",
     },

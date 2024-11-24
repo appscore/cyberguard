@@ -96,7 +96,7 @@ export const AzureOpenAIForm = ({
       </div>
       <FormField
         control={form.control}
-        name="azure_openai_api_key"
+        name="api_key"
         render={({ field }) => (
           <FormItem className="w-full">
             <FormLabel>API Key</FormLabel>

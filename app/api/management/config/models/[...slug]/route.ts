@@ -54,22 +54,22 @@ export async function PUT(
     if (id && !isNaN(Number(id))) {
       const reqBody = await request.json();
       console.log("request ", JSON.stringify(reqBody));
-      const { modelProvider, modelName, apiKey } = reqBody;
-      if (!modelProvider || !modelName || !apiKey) {
+      const { model_provider, model, api_key } = reqBody;
+      if (!model_provider || !model || !api_key) {
         return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
       }
 
       let updatedModel = await updateRecord(id, {
-        modelProvider,
-        modelName,
-        apiKey
+        model_provider,
+        model,
+        api_key
       });
 
       if (!updatedModel) {
         updatedModel = await createRecordWithId(id, {
-          modelProvider,
-          modelName,
-          apiKey
+          model_provider,
+          model,
+          api_key
         });
       }
       return NextResponse.json(updatedModel, { status: 200 });

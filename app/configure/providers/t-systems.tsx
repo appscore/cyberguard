@@ -43,7 +43,7 @@ export const TSystemsForm = ({
     <>
       <FormField
         control={form.control}
-        name="t_systems_llmhub_api_key"
+        name="api_key"
         render={({ field }) => (
           <FormItem>
             <FormLabel>LLMHub API Key (*)</FormLabel>

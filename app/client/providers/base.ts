@@ -7,4 +7,5 @@ export const BaseConfigSchema = z.object({
   embedding_dim: z.number().nullable().optional(),
   configured: z.boolean().nullable().optional(),
   api_key: z.string().nullable().optional(),
+  id: z.string().nullable().optional(),
 });
