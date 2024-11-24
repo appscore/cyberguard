@@ -125,6 +125,21 @@ export const updateModelConfig = async (
   return res.json();
 };
 
+export const deleteModelConfig = async (
+  data: string,
+): Promise<ModelConfigType> => {
+  const res = await fetch(`${getBaseURL()}/api/management/config/models/` + data, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  if (!res.ok) {
+    throw new Error("Failed to delete model config");
+  }
+  return await res.json();
+};
+
 export async function fetchModels(
   provider: string,
   providerUrl?: string,

@@ -1,5 +1,5 @@
 import { useQuery, useQueryClient } from "react-query";
-import { fetchModelConfig, updateModelConfig } from "../client/providers";
+import { fetchModelConfig, updateModelConfig, deleteModelConfig } from "../client/providers";
 import { ModelConfig } from "./model";
 import { Button } from "./ui/button";
 import { Plus } from "lucide-react";
@@ -57,6 +57,17 @@ export const ModelConfigList = ({
     }
   };
 
+  const deleteConfig = async (id: string) => {
+    try {
+      await deleteModelConfig(id);
+      setConfigs(configs.filter(config => config.id !== id));
+      onConfigChange();
+      queryClient.invalidateQueries("modelConfig");
+    } catch (error) {
+      console.error("Failed to delete model config", error);
+    }
+  };
+
   return (
     <div>
       <div>
@@ -69,6 +80,7 @@ export const ModelConfigList = ({
             onConfigChange={() => updateConfig(config)}
             queryClient={queryClient}
             isLoading={isLoading}
+            onDelete={() => deleteConfig(config.id)}
           />
         ))}
       </div>
