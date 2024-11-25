@@ -9,7 +9,9 @@
     "start": "next start",
     "lint": "next lint",
     "generate": "tsx app/api/chat/engine/generate.ts",
-    "test-run": "dotenv -- tsx app/api/chat/workflow/threatAnalysis.ts"
+    "test-run": "dotenv -- tsx app/api/chat/workflow/threatAnalysis.ts",
+    "csv-loader": "dotenv -- tsx app/api/chat/utils/csv-loader.ts",
+    "workflow": "dotenv -- tsx app/api/chat/dynamic-workflow/runWorkflow.ts"
   },
   "dependencies": {
     "@apidevtools/swagger-parser": "^10.1.0",
@@ -61,6 +63,7 @@
     "@types/uuid": "^9.0.8",
     "autoprefixer": "^10.4.16",
     "cross-env": "^7.0.3",
+    "csv-parser": "^3.0.0",
     "dotenv-cli": "^7.4.2",
     "eslint": "^8.55.0",
     "eslint-config-next": "^14.2.4",

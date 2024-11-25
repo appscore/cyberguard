@@ -1,0 +1,33 @@
+{
+  "workflow_name": "custom_workflow",
+  "timeout": 360000,
+  "agents": [
+    {
+      "id": "agent1",
+      "name": "Initial Analysis Agent",
+      "prompt": "Analyze the input data for potential risks...",
+      "conditions": [],
+      "next_agents": ["agent2"]
+    },
+    {
+      "id": "agent2",
+      "name": "Conditional Agent",
+      "prompt": "Evaluate the input and determine...",
+      "conditions": [
+        {
+          "condition": "result.startsWith('High')",
+          "next_agent": "agent3"
+        },
+        {
+          "condition": "result.startsWith('Low')",
+          "next_agent": "stop"
+        }
+      ]
+    },
+    {
+      "id": "agent3",
+      "name": "Final Metrics Agent",
+      "prompt": "Generate final metrics for the input..."
+    }
+  ]
+}

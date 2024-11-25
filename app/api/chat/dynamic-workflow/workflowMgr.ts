@@ -12,8 +12,6 @@ import { AgentConfig, DynamicWorkflowEvent } from "./types";
 export const createFlexibleWorkflow = async (
   dbClient: any, // Replace `any` with your database client's type
   workflowName: string,
-  messages?: any[], // Replace `any` with your message type
-  params?: any,
 ): Promise<Workflow> => {
   const configManager = new AgentConfigManager(dbClient);
   const workflowConfig = await configManager.fetchWorkflowConfig(workflowName);
@@ -31,8 +29,8 @@ export const createFlexibleWorkflow = async (
   const createAgentStep = (agentConfig: AgentConfig) => {
     return async (
       context: Context,
-      ev: DynamicWorkflowEvent,
-    ): Promise<DynamicWorkflowEvent> => {
+      ev: DynamicWorkflowEvent | StartEvent | StopEvent,
+    ) => {
       console.log(`Executing agent: ${agentConfig.name}`);
       const result = await runAgent(context, agentConfig.prompt, ev.data.input);
       context.set(agentConfig.id, result);
@@ -100,7 +98,7 @@ export const createFlexibleWorkflow = async (
       ...(agentConfig.next_agents || []).map((id) => eventTypeMap[id]),
     ];
 
-    workflow.addStep(eventClass, agentFunction, {
+    workflow.addStep(agentConfig.id, agentFunction, {
       outputs: outputs,
     });
   });
