@@ -30,11 +30,13 @@ async function main() {
   try {
     const rows: CsvRow[] = await loadCsv(csvFilePath);
 
-    const topRows = rows.slice(0, 50);
+    const topRows = rows.slice(0, 2);
     // console.log("CSV Data:", topRows);
     const comparision: any = {
+      startTime: new Date().getTime(),
       totalHumanSpam: 0,
       totalHumanHam: 0,
+      endTime: 0,
     };
     const metric = {
       totalAISpam: 0,
@@ -43,8 +45,15 @@ async function main() {
       totalFalseSpam: 0,
       totalFalseHam: 0,
     };
+    const workflowResponses = [];
     for (const row of topRows) {
       const workflowResponse = await runWorkflowsForAllModels(row.message);
+      workflowResponses.push({
+        query: row.message,
+        categoryByHuman: row.category,
+        result: workflowResponse,
+      });
+
       console.log("Result:", workflowResponse);
       if (row.category === "ham") comparision.totalHumanHam += 1;
       if (row.category === "spam") comparision.totalHumanSpam += 1;
@@ -70,7 +79,14 @@ async function main() {
           comparision[model].totalFalseSpam += 1;
       }
     }
+
+    const filePath = "./response.json";
+    const jsonData = JSON.stringify(workflowResponses, null, 2); // Pretty-print the JSON
+
+    // Write the JSON to a file
+    fs.writeFileSync(filePath, jsonData, "utf8");
     console.log("Comparision:", comparision);
+    comparision.endTime = new Date().getTime();
   } catch (error) {
     console.error("Error loading CSV:", error);
   }

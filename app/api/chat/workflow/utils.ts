@@ -1,7 +1,7 @@
 import { StartEvent, Workflow } from "@llamaindex/core/workflow";
 import { Settings } from "llamaindex";
 import { ModelManager } from "./models";
-import { createWorkflow } from "./threatFactory2";
+import { createWorkflow } from "./threatFactory";
 
 const modelManager = new ModelManager();
 modelManager.initModels();

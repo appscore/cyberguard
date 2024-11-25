@@ -1,3 +1,4 @@
 id,model_provider,model,api_key
-1,openai,openai/o1-mini,sk-HiwIMKt8g5lSbT3BlbkFJU-101
-2,gemini,google/gemini-exp-1121:free,sk-HiwIMKt8g5lSbT3BlbkFJU-102
+1,openai,openai/o1-mini,sdf
+2,gemini,google/gemini-flash-1.5-8b,sk-HiwIMKt8g5lSbT3BlbkFJU-102
+3,mistral,mistralai/mistral-large-2411,asfdsa

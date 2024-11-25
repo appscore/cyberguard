@@ -158,11 +158,11 @@ Ensure there are no additional text, comments, or markdown. Only return the vali
   Format your response strictly as valid JSON. The JSON structure should be:
 
 {
-  "Severity": <score>,
-  "Urgency": <score>,
-  "Sophistication": <score>,
-  "Potential Impact": <score>,
-  "Credibility": <score>,
+  "severity": <score>,
+  "urgency": <score>,
+  "sophistication": <score>,
+  "potentialImpact": <score>,
+  "credibility": <score>,
   "justification": "<brief justification>",
 }
 

@@ -1,4 +1,5 @@
-import { GEMINI_MODEL, OpenAI } from "llamaindex";
+import { GEMINI_MODEL } from "llamaindex";
+import { readCSV } from "../../../lib/csvHandler";
 import { OpenRouterLLM } from "../utils/open-router";
 interface Model {
   id: string;
@@ -11,60 +12,21 @@ export class ModelManager {
   private embedModels: { [key: string]: any } = {};
 
   async initModels() {
-    // const openai = new OpenAI({
-    //   model: process.env.MODEL ?? "gpt-4o-mini",
-    //   maxTokens: process.env.LLM_MAX_TOKENS
-    //     ? Number(process.env.LLM_MAX_TOKENS)
-    //     : undefined,
+    const models: any[] = await readCSV();
+    for (const model of models) {
+      this.llmModels[model.model_provider] = new OpenRouterLLM({
+        model: model.model,
+      });
+    }
+    // this.llmModels["openai"] = new OpenRouterLLM({
+    //   model: "openai/gpt-4o-2024-11-20",
     // });
-    // [
-    //   {
-    //     id: "1",
-    //     model_provider: "openai",
-    //     model: "gpt-4o-mini",
-    //     api_key: "sk-sample-1",
-    //   },
-    //   {
-    //     id: "3",
-    //     model_provider: "gemini",
-    //     model: "gemini-1.0-pro",
-    //     api_key: "AIzaSyCXHyp-rUyQ3og8FVQKNk0sbecigDw0kvU",
-    //   },
-    // ];
-
-    // const gemini = new Gemini({
-    //   model: GEMINI_MODEL.GEMINI_PRO_1_5_FLASH,
+    // this.llmModels["gemini"] = new OpenRouterLLM({
+    //   model: "google/gemini-flash-1.5-8b",
     // });
-    // const modelConfigs: Model[] = await readCSV();
-    const DEFAULT_MODEL = "gpt-4o-2024-11-20";
-    // for (const model of modelConfigs) {
-    //   if (model.model_provider === "openai") {
-    //     const openai = new OpenAI({
-    //       model: model.model,
-    //       apiKey: model.api_key,
-    //     });
-    //     this.llmModels[model.model_provider] = openai;
-    //   }
-    //   if (model.model_provider === "gemini") {
-    //     const gemini = new Gemini({
-    //       model: model.model,
-    //     });
-    //   }
-    //
-
-    //   this.llmModels
-    // }
-    this.llmModels["openai"] = new OpenRouterLLM({
-      model: "openai/gpt-4o-2024-11-20",
-    });
-    this.llmModels["gemini"] = new OpenRouterLLM({
-      model: "google/gemini-flash-1.5-8b",
-    });
-    this.llmModels["claude"] = new OpenRouterLLM({
-      model: "anthropic/claude-3.5-haiku-20241022:beta",
-    });
-    // this.llmModels["openai"] = openai;
-    // this.llmModels["gemini"] = gemini;
+    // this.llmModels["claude"] = new OpenRouterLLM({
+    //   model: "anthropic/claude-3.5-haiku-20241022:beta",
+    // });
   }
   addLLM(name: string, model: any) {
     this.llmModels[name] = model;

@@ -27,6 +27,7 @@ export class OpenRouterLLM extends ToolCallLLM<OpenRouterChatOptions> {
   apiKey: string;
   apiUrl: string;
   additionalHeaders?: Record<string, string>;
+  heliconeApiKey?: string;
 
   constructor(init?: Partial<OpenRouterLLM>) {
     super();
@@ -35,8 +36,9 @@ export class OpenRouterLLM extends ToolCallLLM<OpenRouterChatOptions> {
     this.topP = init?.topP ?? 1;
     this.maxTokens = init?.maxTokens ?? undefined;
     this.apiKey = init?.apiKey ?? process.env.OPENROUTER_API_KEY!;
-    this.apiUrl = init?.apiUrl ?? "https://openrouter.ai/api/v1/chat/completions";
+    this.apiUrl = init?.apiUrl ?? "https://openrouter.helicone.ai/api/v1/chat/completions";
     this.additionalHeaders = init?.additionalHeaders;
+    this.heliconeApiKey = process.env.HELICONE_API_KEY
   }
 
   get supportToolCall(): boolean {
@@ -100,6 +102,7 @@ export class OpenRouterLLM extends ToolCallLLM<OpenRouterChatOptions> {
 
     const headers = {
       Authorization: `Bearer ${this.apiKey}`,
+      "Helicone-Auth": `Bearer ${this.heliconeApiKey}`,
       "Content-Type": "application/json",
       ...this.additionalHeaders,
     };
