@@ -104,13 +104,13 @@ const example = {
 export default function Home() {
   const [query, setQuery] = useState("");
   const [response, setResponse] = useState<Partial<Response>>({});
+  const { backend } = useClientConfig();
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
     setQuery(value);
   };
 
   const handleSubmit = () => {
-    const { backend } = useClientConfig();
     const requestBody = {
       messages: [{ content: query, role: "user" }],
     };
@@ -187,9 +187,6 @@ export default function Home() {
                 </Table>
               </TableContainer>
             )}
-            <Box>
-              <Typography>{response.re}</Typography>
-            </Box>
           </Box>
           <Box display={"flex"} gap={2} flexDirection={"row"}>
             <TextField
