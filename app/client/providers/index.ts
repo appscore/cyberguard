@@ -52,19 +52,19 @@ export const supportedProviders = [
   {
     name: "Gemini",
     value: "gemini",
-  },
-  {
-    name: "Ollama",
-    value: "ollama",
-  },
-  {
-    name: "Azure OpenAI",
-    value: "azure-openai",
-  },
-  {
-    name: "T-Systems LLMHub",
-    value: "t-systems",
-  },
+ },
+  // {
+  //   name: "Ollama",
+  //   value: "ollama",
+  // },
+  // {
+  //   name: "Azure OpenAI",
+  //   value: "azure-openai",
+  // },
+  // {
+  //   name: "T-Systems LLMHub",
+  //   value: "t-systems",
+  // },
   {
     name: "Mistral AI",
     value: "mistral",
