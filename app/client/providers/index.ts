@@ -108,8 +108,8 @@ export const fetchModelConfig = async (): Promise<ModelConfigType> => {
 export const updateModelConfig = async (
   data: ModelConfigType,
 ): Promise<ModelConfigType> => {
-  const res = await fetch(`${getBaseURL()}/api/management/config/models`, {
-    method: "POST",
+  const res = await fetch(`${getBaseURL()}/api/management/config/models/` + data.id, {
+    method: "PUT",
     headers: {
       "Content-Type": "application/json",
     },
@@ -123,6 +123,21 @@ export const updateModelConfig = async (
     throw new Error("Failed to update model config");
   }
   return res.json();
+};
+
+export const deleteModelConfig = async (
+  data: string,
+): Promise<ModelConfigType> => {
+  const res = await fetch(`${getBaseURL()}/api/management/config/models/` + data, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  if (!res.ok) {
+    throw new Error("Failed to delete model config");
+  }
+  return await res.json();
 };
 
 export async function fetchModels(

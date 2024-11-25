@@ -3,7 +3,7 @@ import { BaseConfigSchema } from "./base";
 
 export const MistralConfigSchema = BaseConfigSchema.extend({
   model_provider: z.literal("mistral"),
-  mistral_api_key: z
+  api_key: z
     .string()
     .nullable()
     .optional()
@@ -18,5 +18,5 @@ export const DEFAULT_MISTRAL_CONFIG: z.input<typeof MistralConfigSchema> = {
   model: "mistral-tiny",
   embedding_model: "mistral-embed",
   embedding_dim: 1024,
-  mistral_api_key: "",
+  api_key: "",
 };

@@ -38,7 +38,7 @@ export const GroqForm = ({
     <>
       <FormField
         control={form.control}
-        name="groq_api_key"
+        name="api_key"
         render={({ field }) => (
           <FormItem>
             <FormLabel>Groq API Key (*)</FormLabel>

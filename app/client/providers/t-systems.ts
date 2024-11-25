@@ -3,7 +3,7 @@ import { BaseConfigSchema } from "./base";
 
 export const TSystemsConfigSchema = BaseConfigSchema.extend({
   model_provider: z.literal("t-systems"),
-  t_systems_llmhub_api_key: z
+  api_key: z
     .string()
     .nullable()
     .optional()
