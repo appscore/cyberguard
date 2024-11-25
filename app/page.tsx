@@ -37,6 +37,7 @@ export default function Home() {
             borderRadius={4}
             height={"100%"}
             boxShadow={2}
+            sx={{ overflowY: "scroll" }}
             mb={4}
             px={4}
             py={3}
