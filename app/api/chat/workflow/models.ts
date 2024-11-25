@@ -1,21 +1,32 @@
-import { Gemini, GEMINI_MODEL, OpenAI, } from "llamaindex";
-
+import { GEMINI_MODEL } from "llamaindex";
+import { readCSV } from "../../../lib/csvHandler";
+import { OpenRouterLLM } from "../utils/open-router";
+interface Model {
+  id: string;
+  model_provider: string;
+  model: string | GEMINI_MODEL;
+  api_key: string;
+}
 export class ModelManager {
   private llmModels: { [key: string]: any } = {};
   private embedModels: { [key: string]: any } = {};
 
-  initModels() {
-    const openai = new OpenAI({
-      model: process.env.MODEL ?? "gpt-4o-mini",
-      maxTokens: process.env.LLM_MAX_TOKENS
-        ? Number(process.env.LLM_MAX_TOKENS)
-        : undefined,
-    });
-    const gemini = new Gemini({
-      model: GEMINI_MODEL.GEMINI_PRO_1_5_FLASH,
-    });
-    this.llmModels["openai"] = openai;
-    this.llmModels["gemini"] = gemini;
+  async initModels() {
+    const models: any[] = await readCSV();
+    for (const model of models) {
+      this.llmModels[model.model_provider] = new OpenRouterLLM({
+        model: model.model,
+      });
+    }
+    // this.llmModels["openai"] = new OpenRouterLLM({
+    //   model: "openai/gpt-4o-2024-11-20",
+    // });
+    // this.llmModels["gemini"] = new OpenRouterLLM({
+    //   model: "google/gemini-flash-1.5-8b",
+    // });
+    // this.llmModels["claude"] = new OpenRouterLLM({
+    //   model: "anthropic/claude-3.5-haiku-20241022:beta",
+    // });
   }
   addLLM(name: string, model: any) {
     this.llmModels[name] = model;
