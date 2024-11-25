@@ -17,13 +17,7 @@ export const GeminiForm = ({
   form: UseFormReturn;
   defaultValues: any;
 }) => {
-  const supportingModels = [
-    "gemini-1.0-pro",
-    "gemini-1.5-flash",
-    "gemini-1.5-flash-latest",
-    "gemini-1.5-pro",
-    "gemini-1.5-pro-latest",
-  ];
+  const supportingModels = ["google/gemini-exp-1121:free", "google/gemini-flash-1.5-8b", "google/gemini-pro-1.5"]; //["gemini-1.0-pro", "gemini-1.5-flash", "gemini-1.5-flash-latest", "gemini-1.5-pro", "gemini-1.5-pro-latest"];
 
   return (
     <>

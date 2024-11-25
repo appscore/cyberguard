@@ -17,7 +17,7 @@ export const MistralForm = ({
   form: UseFormReturn;
   defaultValues: any;
 }) => {
-  const supportingModels = ["mistral-tiny", "mistral-small", "mistral-medium"];
+  const supportingModels = ["mistralai/mistral-large-2411", "mistralai/mistral-nemo", "mistralai/ministral-8b" ]; // ["mistral-tiny", "mistral-small", "mistral-medium"];
 
   return (
     <>
